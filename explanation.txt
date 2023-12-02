@@ -1,0 +1,14 @@
+I'm using the http.server library to listen for requests on the provided port on the localhost. I've defined three classes each of which extend the http.server.SimpleHTTPRequestHandler class and handle GET and POST requests in the passive, active, and phishing modes respectively. I'm forwarding the requests from the client to the requested domain, obtaining the response, and forwarding that back to the client.
+Passive mode:-
+In the pasive mode, I'm extracting important information from the GET request URL, POST request content, and cookies from the request headers. I'm writing this information to the file info_1.txt. Hence, when the proxy is run in passive mode, it will write a file called info_1.txt containing important extracted information including cookies.
+Active mode:-
+In the active mode, I'm injecting Javascript code at the end of legitimate HTML response and then sending the modified response to the client. The Javascript code fingerprints the user by sending back a GET request to the proxy containing information such as the user-agent, screen resolution, and language. The proxy script is reading in the Javascript code from a file called injection.js (which I've written for better organization and have also provided along with the submission). When the proxy receives the GET request sent by the injected Javascript code, it extracts the important information and stores it to a file called info_2.txt. Hence, when the proxy is run in active mode, it will inject Javascript code in legitimate HTML responses to collect important information, and then write a file called info_2.txt containing that information.
+Phishing mode:-
+In the phishing mode, instead of forwarding the request from the client to the requested domain, the proxy sends a phishing page resembling a legitimate login page to the client. Just like the Javascript code, I read the HTML for the phishing page from a different file called login.html. I've done this for better organization, and have also provided login.html in the submission. I send Content-Length and Content-Type as the only headers with the phishing page as the content.
+
+Notes to TA:-
+o The submission contains the files injection.js and login.html apart from proxy.py and explanation.txt.
+o I recommend using port 8000 for testing. if a different port is used, it would have to be changed in login.html as well, in the URL specifying the form action.
+o If a listening IP other than localhost is used, even that would have to be changed in login.html, in the URL specifying the form action.
+o I've added a phishing mode option for the proxy which can be run using "python proxy.py -m phishing...".
+o Thank you for all your help.
